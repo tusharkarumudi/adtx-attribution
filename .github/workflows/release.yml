@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  id-token: write        # OIDC token for keyless Sigstore signing
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Build
+        run: |
+          pip install build
+          python -m build
+
+      # CycloneDX SBOM. For a security tool aimed at security teams, shipping
+      # without one is an easy thing to be criticised for.
+      - name: Generate SBOM
+        run: |
+          pip install cyclonedx-bom
+          cyclonedx-py environment -o sbom.cyclonedx.json --output-format json
+
+      # Keyless signing via OIDC: no long-lived key to leak or rotate. The
+      # signing identity is the GitHub workflow itself, recorded in the public
+      # Rekor transparency log and verifiable by anyone.
+      - name: Sign artifacts
+        uses: sigstore/gh-action-sigstore-python@v3.0.0
+        with:
+          inputs: ./dist/*.tar.gz ./dist/*.whl ./sbom.cyclonedx.json
+
+      - name: Checksums
+        run: |
+          cd dist && sha256sum * > SHA256SUMS && cd ..
+          sha256sum sbom.cyclonedx.json >> dist/SHA256SUMS
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
+            sbom.cyclonedx.json
+            *.sigstore.json
+          generate_release_notes: true
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true

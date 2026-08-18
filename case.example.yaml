@@ -1,0 +1,32 @@
+# Mandatory. The engine refuses to start without case_ref, authorization, seeds.
+case_ref: SCRAPE-2026-0417
+authorization: "IR ticket SEC-88213 / legal preservation request 2026-08-02"
+contact_email: "threatintel@example.com"
+
+seeds:
+  - domain:scraper-site.example
+  - seller_id:pubmatic.com/156423
+  - org_name:Example Media Holdings Ltd
+
+# Hard cap on hops from an authorized seed. This is the control that keeps an
+# infrastructure investigation from walking into the personal life of someone
+# who once committed to a shared repo.
+pivot_radius: 3
+
+# A case scoped to Company will refuse to instantiate Person entities at all.
+entity_types_allowed:
+  - Company
+  - Persona
+
+jurisdictions: [US, EU, IN]
+
+# Salted-hash identifiers at rest; rehydrated only in the final report.
+minimize: true
+retention_days: 180
+
+budget:
+  max_requests: 4000
+  max_nodes: 15000
+  max_runtime_s: 1800
+
+audit_path: audit.jsonl

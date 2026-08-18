@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "adtx-attribution: ad-tech supply-chain collectors for entity attribution"
+message: "If you use this software or the method it implements, please cite it."
+type: software
+authors:
+  - family-names: Karumudi
+    given-names: Tushar
+repository-code: "https://github.com/OWNER/adtx-attribution"
+abstract: >-
+  Collectors and a reverse ads.txt/sellers.json index for attributing websites
+  to the legal entities paid for their advertising inventory. Chains IAB ads.txt
+  v1.1 and sellers.json declarations to statutory corporate registries (GLEIF,
+  SEC EDGAR, UK Companies House) and to infrastructure sources (RDAP,
+  Certificate Transparency, passive DNS), using only free and keyless endpoints.
+  The reverse index doubles as the selectivity corpus required to calibrate
+  attribution-graph confidence scores.
+keywords:
+  - ads.txt
+  - sellers.json
+  - ad fraud
+  - open source intelligence
+  - attribution
+  - corporate registries
+license: Apache-2.0
+version: 0.1.0
