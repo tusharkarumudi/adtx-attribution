@@ -216,28 +216,79 @@ Name classification is deliberately conservative: an unmatched name is treated a
 a person. A false negative costs one lead. A false positive publishes a home
 address.
 
-### Not included: data brokers and people-search sites
+### Person-scoped collectors: opt-in, three keys
 
-Spokeo, BeenVerified, TruePeopleSearch, Radaris and equivalents are `DATA_BROKER`
-in the source-class deny list and raise at collector load.
+Gravatar, GitHub commit-email mining, PGP keyservers, holehe and WhatsMyName
+username expansion ship in the `persona` extra:
 
-Three reasons, none of them squeamishness:
+```bash
+pip install "adtx-attribution[persona]"
+```
 
-1. **They aren't public records.** They're commercial aggregations of purchased
-   and scraped data with unmeasured error rates. A conclusion resting on one is
-   hard to defend if the investigation ends up in front of a court.
+**Installing does not enable them.** Two gates must both be open, and
+enumeration needs a third:
+
+```yaml
+entity_types_allowed: [Company, Persona]      # key 1
+persona_collectors: [gravatar, github_intel]  # key 2 — per collector
+allow_username_enumeration: false             # key 3 — enumeration only
+```
+
+Two keys rather than one is deliberate. A case scoped to `Company` cannot start
+enumerating people because someone passed `--collectors all`, and enabling one
+persona collector does not enable the rest. Gated collectors are written to the
+audit log rather than silently skipped, so a reviewer can see which sources were
+available and deliberately unused.
+
+`username_expand` takes a third key because it differs in kind. The others take
+an identifier you already hold and query one named service; enumeration takes a
+bare handle and sweeps hundreds of sites. By the scoring model's own logic its
+output is worth very little — every hit joins one correlation group, so five
+hundred matches score the same as one — which is a reason to think carefully
+before turning it on, not a reason it is unavailable.
+
+`pivot_radius` still applies. It is what stops an investigation of a scraper
+network from walking into the personal life of someone who once committed to a
+shared repository.
+
+### Still not included: data brokers and people-search sites
+
+Spokeo, BeenVerified, TruePeopleSearch, Radaris and equivalents remain
+`DATA_BROKER` in the deny list and raise at collector load. Unlike the persona
+collectors there is no flag for these, for reasons that are practical rather
+than squeamish:
+
+1. **They aren't public records.** Commercial aggregations of purchased and
+   scraped data with unmeasured error rates. A conclusion resting on one is hard
+   to defend if the investigation reaches a court.
 2. **Their terms prohibit automated collection**, near-universally.
 3. **Aggregating them into a dossier can make you a consumer reporting agency.**
    In the US, assembling personal information into a report used for employment,
    tenancy or credit decisions implicates FCRA regardless of intent; motor
-   vehicle records implicate DPPA. This is a live exposure for investigative
-   tooling, not a hypothetical.
+   vehicle records implicate DPPA.
 
-If you're doing licensed investigative work that legitimately requires these, use
-them through a vendor that carries the compliance obligations. Don't wire them
-into an automated pivoting engine.
+If licensed investigative work genuinely requires them, use a vendor carrying
+those compliance obligations rather than wiring them into a pivoting engine.
 
 ---
+
+## Worked examples
+
+```bash
+python examples/end_to_end_domain.py     # full chain, offline, deterministic
+python examples/reference_collector.py   # template for writing your own
+```
+
+`end_to_end_domain.py` runs the complete chain against synthetic data and prints
+the resolved entities, assessments, blocked merges, expectation checklist and
+every output file. It closes with an interpretation section explaining why the
+company resolves confidently while the domain-to-company link stays a lead —
+which is the behaviour to understand before trusting anything this produces.
+
+`reference_collector.py` is a documented template. The comments explain what
+each protocol decision costs you if you get it wrong, especially
+`correlation_group`, which is the field that determines whether your collector
+produces calibrated scores or confident wrong answers.
 
 ## Full collector list continued
 

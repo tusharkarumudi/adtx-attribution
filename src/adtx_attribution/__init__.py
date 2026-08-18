@@ -11,7 +11,7 @@ from .index import AdsTxtIndex, crawl_ads_txt, crawl_sellers_json
 from .ingest import from_opencti_bundle, from_spiderfoot_csv, from_spiderfoot_db
 from .net import Fetcher
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __all__ = [
     "AdsTxtIndex", "crawl_ads_txt", "crawl_sellers_json",
     "Registry", "load_catalog", "query", "coverage_report",

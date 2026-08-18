@@ -29,6 +29,15 @@ Initial public release.
 - Land records: NYC ACRIS and HM Land Registry overseas-company data, entity-keyed
   by construction with natural-person owners suppressed to a terminal marker
 
+### Added (0.3.0)
+- Person-scoped collectors folded in as the `persona` extra: Gravatar, GitHub
+  commit intel, PGP keyservers, holehe, WhatsMyName username expansion
+- Three-key opt-in: entity_types_allowed, per-collector persona_collectors
+  allowlist, and a separate allow_username_enumeration flag for enumeration
+- Gated collectors are audit-logged rather than silently skipped
+- `examples/end_to_end_domain.py` — full offline chain with interpretation
+- `examples/reference_collector.py` — documented protocol template
+
 ### Known limitations
 - `is_confidential: 1` sellers expose only `seller_type`, not entity name
 - EDGAR full-text endpoint is undocumented and unversioned
