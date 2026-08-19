@@ -45,6 +45,9 @@ Initial public release.
 - LLM-derived claims capped at UNCERTAIN and confined to one correlation group
 - Claims marked `text_is_derived` where the source tool discarded the response body
 
+### Added (0.6.0)
+- Robin dark web OSINT ingest wired into the unified suite runner
+
 ### Known limitations
 - `is_confidential: 1` sellers expose only `seller_type`, not entity name
 - EDGAR full-text endpoint is undocumented and unversioned

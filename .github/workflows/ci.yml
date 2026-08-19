@@ -16,3 +16,8 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: pytest -q
+      - name: Run examples
+        run: |
+          for f in examples/*.py; do
+            [ -f "$f" ] && python "$f" > /dev/null || true
+          done

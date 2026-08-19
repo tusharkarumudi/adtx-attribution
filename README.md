@@ -312,6 +312,8 @@ python examples/end_to_end_domain.py     # full chain, offline, deterministic
 python examples/reference_collector.py   # template for writing your own
 ```
 
+`handle-correlation` ships `examples/end_to_end_handles.py` for the persona side.
+
 `end_to_end_domain.py` runs the complete chain against synthetic data and prints
 the resolved entities, assessments, blocked merges, expectation checklist and
 every output file. It closes with an interpretation section explaining why the

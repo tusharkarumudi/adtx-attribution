@@ -12,7 +12,7 @@ from .ingest import from_opencti_bundle, from_spiderfoot_csv, from_spiderfoot_db
 from .net import Fetcher
 from .robin_ingest import from_robin, to_handle_observations
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 __all__ = [
     "AdsTxtIndex", "crawl_ads_txt", "crawl_sellers_json",
     "Registry", "load_catalog", "query", "coverage_report",
