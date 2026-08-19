@@ -154,6 +154,39 @@ typing 100 is not a registry assertion. Unknown event types are skipped rather
 than guessed, since a wrong identifier kind produces a wrong selectivity lookup
 and therefore a wrong score.
 
+## Ingest from Robin (dark web OSINT)
+
+[Robin](https://github.com/apurvsinghgautam/robin) searches dark web engines over
+Tor and summarises findings with an LLM. It is a strong collector; this adapter
+turns its output into scored claims.
+
+```python
+from adtx_attribution import from_robin, to_handle_observations
+claims = from_robin("investigations/kraken.json")
+rows = to_handle_observations(claims, case_ref="CASE-1")   # -> handle-correlation
+```
+
+Extracts PGP fingerprints, .onion addresses, Session/Tox/Jabber IDs, wallet
+addresses and contextual handles, then hands the handles to
+`handle-correlation` with their page-level durable identifiers attached — which
+is what lets a shared PGP key lift two forum accounts above the correlation-point
+floor.
+
+Three constraints the adapter enforces, each for a specific reason:
+
+**One page is one correlation group.** A Robin query returns N results from one
+engine. Those are one query against one index, not N confirmations.
+
+**LLM output is capped at UNCERTAIN.** A model concluding two handles are one
+actor is inference over text, not observation. It can corroborate a link with
+independent support; it cannot create one. The whole summary is one group.
+
+**Claims are marked `text_is_derived`.** Robin truncates scraped text to 2,000
+characters and discards the response body — sensible for an LLM context window,
+fatal for a chain of custody. And `.onion` content has no Wayback and no CT, so
+what was not captured at the time is gone. These claims are leads, and the
+evidence manifest says so rather than implying a capture that does not exist.
+
 ## Registry catalog
 
 Most corporate and land registries in the world cannot be automated — captcha,

@@ -38,6 +38,13 @@ Initial public release.
 - `examples/end_to_end_domain.py` — full offline chain with interpretation
 - `examples/reference_collector.py` — documented protocol template
 
+### Added (0.5.0)
+- Robin ingest adapter (`from_robin`, `to_handle_observations`): extracts PGP
+  fingerprints, .onion addresses, Session/Tox/Jabber IDs, wallets and contextual
+  handles from dark web OSINT investigations
+- LLM-derived claims capped at UNCERTAIN and confined to one correlation group
+- Claims marked `text_is_derived` where the source tool discarded the response body
+
 ### Known limitations
 - `is_confidential: 1` sellers expose only `seller_type`, not entity name
 - EDGAR full-text endpoint is undocumented and unversioned
