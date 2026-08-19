@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "adtx-attribution"
-version = "0.3.0"
+version = "0.4.0"
 description = "Ad-tech supply-chain and registry collectors for attribution-graph"
 readme = "README.md"
 requires-python = ">=3.11"
