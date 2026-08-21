@@ -5,6 +5,7 @@ type: software
 authors:
   - family-names: Karumudi
     given-names: Tushar
+    orcid: "https://orcid.org/0009-0005-0870-914X"
 repository-code: "https://github.com/OWNER/adtx-attribution"
 abstract: >-
   Collectors and a reverse ads.txt/sellers.json index for attributing websites
