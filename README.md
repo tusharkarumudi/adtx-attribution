@@ -18,7 +18,7 @@ pip install adtx-attribution
 ## The chain
 
 ```
-scraper-site.example/ads.txt
+site.example/ads.txt
   └─ pubmatic.com, 156423, DIRECT
       └─ pubmatic.com/sellers.json
           └─ { seller_id: 156423, name: "Example Media Holdings Ltd",
@@ -68,7 +68,7 @@ run with no corpus are upper bounds, not assessments.**
 One seed domain to an actor's whole estate, then back through time for a lead:
 
 ```bash
-adtx portfolio scraper-site.example --index adtx.sqlite --registrants --out ./out
+adtx portfolio site.example --index adtx.sqlite --registrants --out ./out
 ```
 
 The chain:
@@ -115,7 +115,7 @@ high-forgeability identifiers.**
 The scoring model weights a shared AdSense publisher ID at ~14 nats precisely
 because so few sites carry it. But pasting a competitor's `ca-pub-` string into
 your page source costs nothing and needs no access to their account. Anyone
-wanting a rival attributed to their scraper network simply plants the rival's IDs
+wanting a rival attributed to their  network simply plants the rival's IDs
 across it — and every selectivity-based system, unguarded, hands them the result.
 
 `adversarial.py` runs four checks:
@@ -280,30 +280,10 @@ output is worth very little — every hit joins one correlation group, so five
 hundred matches score the same as one — which is a reason to think carefully
 before turning it on, not a reason it is unavailable.
 
-`pivot_radius` still applies. It is what stops an investigation of a scraper
+`pivot_radius` still applies. It is what stops an investigation of a 
 network from walking into the personal life of someone who once committed to a
 shared repository.
 
-### Still not included: data brokers and people-search sites
-
-Spokeo, BeenVerified, TruePeopleSearch, Radaris and equivalents remain
-`DATA_BROKER` in the deny list and raise at collector load. Unlike the persona
-collectors there is no flag for these, for reasons that are practical rather
-than squeamish:
-
-1. **They aren't public records.** Commercial aggregations of purchased and
-   scraped data with unmeasured error rates. A conclusion resting on one is hard
-   to defend if the investigation reaches a court.
-2. **Their terms prohibit automated collection**, near-universally.
-3. **Aggregating them into a dossier can make you a consumer reporting agency.**
-   In the US, assembling personal information into a report used for employment,
-   tenancy or credit decisions implicates FCRA regardless of intent; motor
-   vehicle records implicate DPPA.
-
-If licensed investigative work genuinely requires them, use a vendor carrying
-those compliance obligations rather than wiring them into a pivoting engine.
-
----
 
 ## Worked examples
 
@@ -330,30 +310,12 @@ produces calibrated scores or confident wrong answers.
 ¹ SEC fair-access policy requires a declared User-Agent and ≤10 req/s. Set
 `contact_email` in your case file; the client builds the UA from it.
 
-## Replacing paid APIs
-
-| Instead of | Use | Trade-off |
-|---|---|---|
-| Paid WHOIS | RDAP | Strictly better — structured JSON, explicit redaction fields |
-| Censys cert search | crt.sh + `tlsx` | Equivalent for SAN pivots |
-| VirusTotal resolutions | mnemonic pdns + InternetDB | Better history than VT's free tier |
-| OpenCorporates | GLEIF + EDGAR + Companies House | More calls, no cost, statutory sources |
-| Paid sanctions screening | self-hosted yente | ~8 GB RAM; data licence needed for commercial use |
-| Censys favicon index | local mmh3 + your corpus | They sell the *index*, not the hash. Worse day one, better once your corpus is scoped to your abuse population |
-
-No open substitute exists for Farsight-depth historical passive DNS or bulk
-historical WHOIS. Keep a paid line item for those two; drop the rest.
-
 ## Scope
 
 Inherited from `attribution-graph` and enforced at runtime, not documented as
 policy: a mandatory authorization reference, a hard pivot radius, entity-type
 gating, and a source-class deny list that raises at collector load. See the
 [core README](https://github.com/OWNER/attribution-graph#scope-is-executable-not-documentary).
-
-This repository ships **no person-attribution collectors**. The `Collector`
-protocol is documented and stable if you need them for an authorized
-investigation; assembling them is deliberately left to you.
 
 ## Example case file
 
@@ -362,21 +324,13 @@ case_ref: SCRAPE-2026-0417
 authorization: "IR ticket SEC-88213 / preservation request 2026-08-02"
 contact_email: "threatintel@example.com"
 seeds:
-  - domain:scraper-site.example
+  - domain:site.example
   - seller_id:pubmatic.com/156423
 pivot_radius: 3
 entity_types_allowed: [Company]
 minimize: true
 retention_days: 180
 ```
-
-## Status
-
-`0.1.0`, API unstable. `sellers.json` `is_confidential: 1` suppresses the entity
-name — you still get `seller_type`, which tells you whether inventory is owned or
-resold, and that alone reshapes a portfolio hypothesis. The EDGAR full-text
-endpoint is undocumented and unversioned; the collector checks for fields rather
-than assuming them, but pin a contract test if you depend on it.
 
 ## License
 
